@@ -16,7 +16,7 @@ namespace SysBot.Pokemon.Helpers.ShowdownHelpers
                 {
                     if (lines[i].Contains("Shiny: Yes", StringComparison.OrdinalIgnoreCase))
                     {
-                        lines[i] = "Shiny: No";
+                        lines[i] = "Shiny: Yes";
                         break;
                     }
                 }
