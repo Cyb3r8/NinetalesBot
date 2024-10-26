@@ -658,9 +658,9 @@ namespace SysBot.Pokemon.Helpers
             {"Feather", 31},
             {"Wing", 32},
             {"Jet", 33},
-            {"Heavy", 34},
+            {"LAHeavy", 34},
             {"Leaden", 35},
-            {"Gigantic", 36},
+            {"Gigaton", 36},
             {"Origin", 37}
         };
 
