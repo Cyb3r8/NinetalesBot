@@ -105,6 +105,8 @@ namespace SysBot.Pokemon
 
         public void SendNotification(PokeRoutineExecutor<TPoke> routine, string message) => Notifier.SendNotification(routine, this, message);
 
+        public void SendTrainerInfo(PokeRoutineExecutor<TPoke> routine, string message) => Notifier.SendNotification(routine, this, message);
+
         public void SendNotification(PokeRoutineExecutor<TPoke> routine, PokeTradeSummary obj) => Notifier.SendNotification(routine, this, obj);
 
         public void SendNotification(PokeRoutineExecutor<TPoke> routine, TPoke obj, string message) => Notifier.SendNotification(routine, this, obj, message);

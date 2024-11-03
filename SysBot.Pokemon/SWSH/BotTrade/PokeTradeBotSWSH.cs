@@ -398,7 +398,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
 
             Log($"Found Link Trade partner: {trainerName}-{trainerTID} (ID: {trainerNID})");
             if (completedTrades == 0 || startingDetail.TotalBatchTrades == 1)
-                poke.SendNotification(this, $"Found Link Trade partner: {trainerName}. **TID**: {trainerTID} **SID**: {trainerSID}. Waiting for a Pokémon...");
+                poke.SendTrainerInfo(this, $"Found Link Trade partner: {trainerName}. **TID**: {trainerTID} **SID**: {trainerSID}. Waiting for a Pokémon...");
 
             if (Hub.Config.Legality.UseTradePartnerInfo && !poke.IgnoreAutoOT)
             {
@@ -701,7 +701,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
                 await Click(A, 0_500, token).ConfigureAwait(false);
         }
 
-        poke.SendNotification(this, $"Found Link Trade partner: {trainerName}. **TID**: {trainerTID}  **SID**: {trainerSID}. Waiting for a Pokémon...");
+        poke.SendTrainerInfo(this, $"Found Link Trade partner: {trainerName}. **TID**: {trainerTID}  **SID**: {trainerSID}. Waiting for a Pokémon...");
 
         if (poke.Type == PokeTradeType.Dump)
             return await ProcessDumpTradeAsync(poke, token).ConfigureAwait(false);
