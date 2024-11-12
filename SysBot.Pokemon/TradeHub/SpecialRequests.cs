@@ -28,6 +28,8 @@ namespace SysBot.Pokemon
 
             StatChange,
 
+            GenderChange,
+
             TeraChange,
 
             Shinify,
@@ -366,6 +368,18 @@ namespace SysBot.Pokemon
                 LegalizeIfNotLegal(ref pk, caller, detail, TrainerName);
 
                 sst = SpecialTradeType.BallReq;
+            }
+            else if (pk.Nickname.Equals(".female", StringComparison.OrdinalIgnoreCase))
+            {
+                pk.SetGender(1);
+                LegalizeIfNotLegal(ref pk, caller, detail, TrainerName);
+                sst = SpecialTradeType.GenderChange; // or another relevant trade type if needed
+            }
+            else if (pk.Nickname.Equals(".male", StringComparison.OrdinalIgnoreCase))
+            {
+                pk.SetGender(2);
+                LegalizeIfNotLegal(ref pk, caller, detail, TrainerName);
+                sst = SpecialTradeType.GenderChange; // or another relevant trade type if needed
             }
             else
             {
