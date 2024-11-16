@@ -31,6 +31,48 @@ public static class QueueHelper<T> where T : PKM, new()
 
     private static readonly ConcurrentDictionary<ulong, int> ActiveBatchIds = new();
 
+    private static readonly Dictionary<int, string> MilestoneImages = new()
+    {
+        { 1, "https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/001.png" },
+        { 50, "https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/050.png" },
+        { 100, "https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/100.png" },
+        { 150, "https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/150.png" },
+        { 200, "https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/200.png" },
+        { 250, "https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/250.png" },
+        { 300, "https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/300.png" },
+        { 350, "https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/350.png" },
+        { 400, "https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/400.png" },
+        { 450, "https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/450.png" },
+        { 500, "https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/500.png" },
+        { 550, "https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/550.png" },
+        { 600, "https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/600.png" },
+        { 650, "https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/650.png" },
+        { 700, "https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/700.png" }
+    };
+
+    private static string GetMilestoneDescription(int tradeCount)
+    {
+        return tradeCount switch
+        {
+            1 => "Congratulations on your first trade!\n**Status:** Newbie Trainer.",
+            50 => "You've reached 50 trades!\n**Status:** Novice Trainer.",
+            100 => "You've reached 100 trades!\n**Status:** Pokémon Professor.",
+            150 => "You've reached 150 trades!\n**Status:** Pokémon Specialist.",
+            200 => "You've reached 200 trades!\n**Status:** Pokémon Champion.",
+            250 => "You've reached 250 trades!\n**Status:** Pokémon Hero.",
+            300 => "You've reached 300 trades!\n**Status:** Pokémon Elite.",
+            350 => "You've reached 350 trades!\n**Status:** Pokémon Trader.",
+            400 => "You've reached 400 trades!\n**Status:** Pokémon Sage.",
+            450 => "You've reached 450 trades!\n**Status:** Pokémon Legend.",
+            500 => "You've reached 500 trades!\n**Status:** Region Master.",
+            550 => "You've reached 550 trades!\n**Status:** Trade Master.",
+            600 => "You've reached 600 trades!\n**Status:** World Famous.",
+            650 => "You've reached 650 trades!\n**Status:** Pokémon Master.",
+            700 => "You've reached 700 trades!\n**Status:** Pokémon God.",
+            _ => $"Congratulations on reaching {tradeCount} trades! Keep it going!"
+        };
+    }
+
     private static int GetOrCreateBatchId(ulong userId, int batchTradeNumber)
     {
         if (batchTradeNumber == 1)
@@ -258,6 +300,13 @@ public static class QueueHelper<T> where T : PKM, new()
         {
             await HandleDiscordExceptionAsync(context, trader, ex);
             return new TradeQueueResult(false);
+        }
+
+        if (SysCord<T>.Runner.Hub.Config.Trade.TradeConfiguration.StoreTradeCodes)
+        {
+            var tradeCodeStorage = new TradeCodeStorage();
+            int tradeCount = tradeCodeStorage.GetTradeCount(trader.Id);
+            _ = SendMilestoneEmbed(tradeCount, context.Channel, trader);
         }
 
         return new TradeQueueResult(true);
@@ -575,21 +624,19 @@ public static class QueueHelper<T> where T : PKM, new()
         }
     }
 
-    public enum AlcremieDecoration
+    private static async Task SendMilestoneEmbed(int tradeCount, ISocketMessageChannel channel, SocketUser user)
     {
-        Strawberry = 0,
+        if (MilestoneImages.TryGetValue(tradeCount, out string? imageUrl))
+        {
+            var embed = new EmbedBuilder()
+                .WithTitle($"{user.Username}'s Milestone Medal")
+                .WithDescription(GetMilestoneDescription(tradeCount))
+                .WithColor(new DiscordColor(255, 215, 0)) // Gold color
+                .WithThumbnailUrl(imageUrl)
+                .Build();
 
-        Berry = 1,
-
-        Love = 2,
-
-        Star = 3,
-
-        Clover = 4,
-
-        Flower = 5,
-
-        Ribbon = 6,
+            await channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+        }
     }
 
     public static async Task<(int R, int G, int B)> GetDominantColorAsync(string imagePath)
