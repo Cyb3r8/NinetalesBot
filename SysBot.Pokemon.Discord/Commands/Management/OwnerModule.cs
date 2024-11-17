@@ -417,7 +417,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
             Description = message,
             Color = (DiscordColor?)Color.Red,
             Timestamp = DateTimeOffset.Now,
-            ThumbnailUrl = "https://media.discordapp.net/attachments/1152944125818183681/1225022126646624296/IMG_4768.png?ex=66cc5242&is=66cb00c2&hm=8aba876bb85aa17d466e5a910055c4128be8a7279d0ca6131968c32512c5fc22&=&format=webp&quality=lossless&width=630&height=700"
+            ThumbnailUrl = "https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/DM.png"
         };
 
         try
