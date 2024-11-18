@@ -27,7 +27,7 @@ public static class EmbedHelper
             .WithTitle("Here is your Trainer Info")
             .WithDescription(message)
             .WithTimestamp(DateTimeOffset.Now)
-            .WithThumbnailUrl("https://media.discordapp.net/attachments/1152944125818183681/1302767401321889913/IMG_5677.png?ex=67295030&is=6727feb0&hm=c0ebc8787984bf235537ea99881946c51b0b01f1d0a140edaeff996e4493b20a&=&format=webp&quality=lossless&width=740&height=986")
+            .WithThumbnailUrl("https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/Trainer_Info.png")
             .WithColor(Color.Red)
             .Build();
 
