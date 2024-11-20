@@ -239,7 +239,7 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
                         {
                             var embed = new EmbedBuilder()
                                 .WithTitle("Your Trade Code Has Been Updated")
-                                .WithDescription($"Your new trade code is:\n\n# {newCode}")
+                                .WithDescription($"Your new trade code is:\n\n# {newCode:0000 0000}")
                                 .WithColor(Color.Green)
                                 .WithFooter($"Changed by: {Context.User.Username}", Context.User.GetAvatarUrl())
                                 .WithThumbnailUrl("https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/UpdateTradeCode.png")
