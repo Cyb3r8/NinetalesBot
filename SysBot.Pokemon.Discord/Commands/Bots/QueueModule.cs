@@ -231,7 +231,33 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
             {
                 if (targetUserId.HasValue)
                 {
-                    await SendTemporaryMessageAsync($"Successfully updated the trade code for user with ID: {userID}.").ConfigureAwait(false);
+                    // Notify the target user via DM
+                    var targetUser = Context.Client.GetUser(userID);
+                    if (targetUser != null)
+                    {
+                        try
+                        {
+                            var embed = new EmbedBuilder()
+                                .WithTitle("Your Trade Code Has Been Updated")
+                                .WithDescription($"Your new trade code is:\n\n# {newCode}")
+                                .WithColor(Color.Green)
+                                .WithFooter($"Changed by: {Context.User.Username}", Context.User.GetAvatarUrl())
+                                .WithThumbnailUrl("https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/UpdateTradeCode.png")
+                                .Build();
+
+                            await targetUser.SendMessageAsync(embed: embed).ConfigureAwait(false);
+
+                            await SendTemporaryMessageAsync($"Successfully updated the trade code for user with ID: {userID} and sent them a notification.").ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await SendTemporaryMessageAsync($"Successfully updated the trade code for user with ID: {userID}, but I couldn't send them a notification.").ConfigureAwait(false);
+                        }
+                    }
+                    else
+                    {
+                        await SendTemporaryMessageAsync($"Successfully updated the trade code for user with ID: {userID}, but the user could not be found.").ConfigureAwait(false);
+                    }
                 }
                 else
                 {
