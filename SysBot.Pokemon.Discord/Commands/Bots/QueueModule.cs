@@ -200,13 +200,22 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("changeTradeCode")]
     [Alias("ctc")]
-    [Summary("Changes the user's trade code if trade code storage is turned on.")]
-    public async Task ChangeTradeCodeAsync([Summary("New 8-digit trade code")] string newCode)
+    [Summary("Changes the user's trade code or another user's trade code if an ID is provided.")]
+    [RequireSudo]
+    public async Task ChangeTradeCodeAsync(
+    [Summary("Discord ID of the user (optional)")] ulong? targetUserId = null,
+    [Summary("New 8-digit trade code")] string newCode = null)
     {
         // Delete user's message immediately to protect the trade code
         await Context.Message.DeleteAsync().ConfigureAwait(false);
 
-        var userID = Context.User.Id;
+        if (string.IsNullOrWhiteSpace(newCode))
+        {
+            await SendTemporaryMessageAsync("Please provide a valid 8-digit trade code.").ConfigureAwait(false);
+            return;
+        }
+
+        var userID = targetUserId ?? Context.User.Id; // Use provided ID or fallback to the command issuer's ID
         var tradeCodeStorage = new TradeCodeStorage();
 
         if (!ValidateTradeCode(newCode, out string errorMessage))
@@ -220,17 +229,24 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
             int code = int.Parse(newCode);
             if (tradeCodeStorage.UpdateTradeCode(userID, code))
             {
-                await SendTemporaryMessageAsync("Your trade code has been successfully updated.").ConfigureAwait(false);
+                if (targetUserId.HasValue)
+                {
+                    await SendTemporaryMessageAsync($"Successfully updated the trade code for user with ID: {userID}.").ConfigureAwait(false);
+                }
+                else
+                {
+                    await SendTemporaryMessageAsync("Your trade code has been successfully updated.").ConfigureAwait(false);
+                }
             }
             else
             {
-                await SendTemporaryMessageAsync("You don't have a trade code set. Use the trade command to generate one first.").ConfigureAwait(false);
+                await SendTemporaryMessageAsync("The specified user does not have a trade code set. They need to generate one first.").ConfigureAwait(false);
             }
         }
         catch (Exception ex)
         {
             LogUtil.LogError($"Error changing trade code for user {userID}: {ex.Message}", nameof(QueueModule<T>));
-            await SendTemporaryMessageAsync("An error occurred while changing your trade code. Please try again later.").ConfigureAwait(false);
+            await SendTemporaryMessageAsync("An error occurred while changing the trade code. Please try again later.").ConfigureAwait(false);
         }
     }
 
@@ -271,12 +287,13 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     private static bool IsEasilyGuessableCode(string code)
     {
-        string[] easyPatterns = [
-                @"^(\d)\1{7}$",           // All same digits (e.g., 11111111)
-                @"^12345678$",            // Ascending sequence
-                @"^87654321$",            // Descending sequence
-                @"^(?:01234567|12345678|23456789)$" // Other common sequences
-            ];
+        string[] easyPatterns = new[]
+        {
+        @"^(\d)\1{7}$",           // All same digits (e.g., 11111111)
+        @"^12345678$",            // Ascending sequence
+        @"^87654321$",            // Descending sequence
+        @"^(?:01234567|12345678|23456789)$" // Other common sequences
+    };
 
         foreach (var pattern in easyPatterns)
         {
@@ -288,4 +305,5 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
         return false;
     }
+
 }
