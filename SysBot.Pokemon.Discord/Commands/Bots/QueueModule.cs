@@ -238,12 +238,12 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
                         try
                         {
                             var embed = new EmbedBuilder()
-                                .WithTitle("Your Trade Code Has Been Updated")
-                                .WithDescription($"Your new trade code is:\n\n# {newCode:0000 0000}")
-                                .WithColor(Color.Green)
-                                .WithFooter($"Changed by: {Context.User.Username}", Context.User.GetAvatarUrl())
-                                .WithThumbnailUrl("https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/UpdateTradeCode.png")
-                                .Build();
+                            .WithTitle("Your Trade Code Has Been Updated")
+                            .WithDescription($"Your new trade code is:\n# {newCode.Insert(4, " ")}") // Inserts a space for formatting (e.g., 1234 5678)
+                            .WithColor(new Color(0, 255, 255))
+                            .WithFooter($"Changed by: {Context.User.Username}", Context.User.GetAvatarUrl())
+                            .WithThumbnailUrl("https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/UpdateTradeCode.png")
+                            .Build();
 
                             await targetUser.SendMessageAsync(embed: embed).ConfigureAwait(false);
 
