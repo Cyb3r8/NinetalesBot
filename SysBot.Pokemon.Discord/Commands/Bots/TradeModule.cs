@@ -1720,7 +1720,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     private static int GetCurrentMilestone(int totalTrades)
     {
-        int[] milestones = { 700, 650, 600, 550, 500, 450, 400, 350, 300, 250, 200, 150, 100, 50, 1 };
+        int[] milestones = { 999, 975, 925, 900, 875, 850, 825, 800, 775, 750, 725, 700, 675, 650, 625, 600, 575, 550, 525, 500, 475, 450, 425, 400, 375, 350, 325, 300, 275, 250, 225, 200, 175, 150, 125, 100, 75, 50, 25, 1 };
         return milestones.FirstOrDefault(m => totalTrades >= m, 0);
     }
 
@@ -1728,29 +1728,55 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
     {
         string status = milestone switch
         {
-            1 => "Newbie Trainer",
-            50 => "Novice Trainer",
-            100 => "Pokémon Professor",
-            150 => "Pokémon Specialist",
-            200 => "Pokémon Champion",
-            250 => "Pokémon Hero",
-            300 => "Pokémon Elite",
-            350 => "Pokémon Trader",
-            400 => "Pokémon Sage",
-            450 => "Pokémon Legend",
-            500 => "Region Master",
-            550 => "Trade Master",
-            600 => "World Famous",
-            650 => "Pokémon Master",
-            700 => "Pokémon God",
+            1 => "Obi-Wan",
+            25 => "Luke",
+            50 => "BB-8",
+            75 => "C3PO",
+            100 => "Finn",
+            125 => "R2-D2",
+            150 => "Trooper",
+            175 => "Darth-Vader",
+            200 => "Obi-Wan-2",
+            225 => "Han",
+            250 => "Leia",
+            275 => "Rey",
+            300 => "Ahsoka",
+            325 => "C3po & R2-D2",
+            350 => "Trooper-2",
+            375 => "Yoda",
+            400 => "Darth-Maul",
+            425 => "???",
+            450 => "Greedo",
+            475 => "Han & Chewie",
+            500 => "Boba Fett",
+            525 => "Wicket",
+            550 => "Trandoshan",
+            575 => "Kylo Ren",
+            600 => "Mando",
+            625 => "Chewie",
+            650 => "Tie Fighter Pilot",
+            675 => "Trooper-3",
+            700 => "Grand Admiral Thrawn",
+            725 => "Poe Dameron",
+            750 => "BB-8-2",
+            775 => "Clone",
+            800 => "Cad Bane",
+            825 => "Anakin",
+            850 => "Endor Trooper",
+            875 => "Mandalorian",
+            900 => "Chewbacca",
+            925 => "Kylo Ren-2",
+            950 => "Darth-Maul-2",
+            975 => "Darth-Vader-2",
+            999 => "Master Yoda",
             _ => "New Trainer"
         };
 
-        string description = $"Total Trades: **{totalTrades}**\n**Current Status:** {status}";
+        string description = $"Total Trades: **{totalTrades}**\nCurrent Status: **{status}**";
 
         if (milestone > 0)
         {
-            string imageUrl = $"https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/{milestone:D3}.png";
+            string imageUrl = $"https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/Medals/{milestone:D3}.PNG";
             return new EmbedBuilder()
                 .WithTitle($"{user.Username}'s Trading Status")
                 .WithColor(new Color(255, 215, 0)) // Gold
