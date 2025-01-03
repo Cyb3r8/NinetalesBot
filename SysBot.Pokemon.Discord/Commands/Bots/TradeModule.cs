@@ -1783,10 +1783,6 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         public int TradeCount { get; set; }
     }
 
-
-
-
-
     [Command("medals")]
     [Alias("ml")]
     [Summary("Shows your current trade count and medal status")]
