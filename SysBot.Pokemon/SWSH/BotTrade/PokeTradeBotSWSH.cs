@@ -1574,7 +1574,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         // Current handler cannot be past gen OT
         if (toSend.Generation != toSend.Format)
         {
-            Log("Can not apply Partner details: Current handler cannot be different gen OT.");
+            Log("Cannot apply Partner details: Current handler cannot be different gen OT.");
             return toSend;
         }
 
@@ -1595,7 +1595,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         }
         else
         {
-            // Apply all trade partner details for non-Mystery Gift Pokémon
+            Log("Applying all trade partner details for non-Mystery Gift Pokémon.");
             cln.OriginalTrainerGender = data[6];
             cln.TrainerTID7 = tidsid % 1_000_000;
             cln.TrainerSID7 = tidsid / 1_000_000;
@@ -1623,7 +1623,10 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         }
         else
         {
-            Log("Pokemon not valid after using Trade Partner Info.");
+            Log("Pokemon not valid after using Trade Partner Info. Reverting to original details.");
+
+            // Revert to the original Pokémon
+            await SetBoxPokemon(toSend, 0, 0, token, sav).ConfigureAwait(false);
             return toSend;
         }
     }
