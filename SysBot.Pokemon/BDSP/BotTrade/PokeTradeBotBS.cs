@@ -238,10 +238,8 @@ public class PokeTradeBotBS : PokeRoutineExecutor8BS, ICountBot, ITradeBot, IDis
         }
         else
         {
-            Log("Pokemon not valid after using Trade Partner Info. Reverting to original details.");
-
-            // Revert back to the original Pokémon info
-            await SetBoxPokemonAbsolute(BoxStartOffset, toSend, token, sav).ConfigureAwait(false);
+            Log("Pokemon not valid after using Trade Partner Info.");
+            await SetBoxPokemonAbsolute(BoxStartOffset, cln, token, sav).ConfigureAwait(false);
             return toSend;
         }
     }
