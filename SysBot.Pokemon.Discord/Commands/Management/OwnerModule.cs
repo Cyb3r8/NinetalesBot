@@ -53,6 +53,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         {
             await Task.Delay(2000);
             await userMessage.DeleteAsync().ConfigureAwait(false);
+            await Context.Message.DeleteAsync();
         }
     }
 
@@ -83,6 +84,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
         await server.LeaveAsync();
         await ReplyAsync($"Left the server '{server.Name}' and added it to the blacklist.");
+        await Context.Message.DeleteAsync();
     }
 
     [Command("unblacklistserver")]
@@ -100,6 +102,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         }
 
         var wasRemoved = settings.ServerBlacklist.RemoveAll(x => x.ID == serverId) > 0;
+        await Context.Message.DeleteAsync();
 
         if (wasRemoved)
         {
@@ -131,6 +134,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         var objects = users.Select(GetReference);
         SysCordSettings.Settings.GlobalSudoList.RemoveAll(z => objects.Any(o => o.ID == z.ID));
         await ReplyAsync("Done.").ConfigureAwait(false);
+        await Context.Message.DeleteAsync();
     }
 
     [Command("addChannel")]
@@ -141,6 +145,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         var obj = GetReference(Context.Message.Channel);
         SysCordSettings.Settings.ChannelWhitelist.AddIfNew([obj]);
         await ReplyAsync("Done.").ConfigureAwait(false);
+        await Context.Message.DeleteAsync();
     }
 
     [Command("syncChannels")]
@@ -191,6 +196,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
     {
         await ReplyAsync("Goodbye.").ConfigureAwait(false);
         await Context.Guild.LeaveAsync().ConfigureAwait(false);
+        await Context.Message.DeleteAsync();
     }
 
     [Command("leaveguild")]
@@ -214,6 +220,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
         await ReplyAsync($"Leaving {guild}.").ConfigureAwait(false);
         await guild.LeaveAsync().ConfigureAwait(false);
+        await Context.Message.DeleteAsync();
     }
 
     [Command("leaveall")]
@@ -269,6 +276,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
             .WithFooter(new EmbedFooterBuilder { Text = "Here's your screenshot." });
 
         await Context.Channel.SendFileAsync(ms, img, embed: embed.Build());
+        await Context.Message.DeleteAsync();
     }
 
     [Command("video")]
@@ -278,6 +286,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
     public async Task RePeekGIF()
     {
         await Context.Channel.SendMessageAsync("Processing GIF request...").ConfigureAwait(false);
+        await Context.Message.DeleteAsync();
 
         // Offload processing to a separate task so we dont hold up gateway tasks
         _ = Task.Run(async () =>
@@ -396,11 +405,12 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
     [Command("kill")]
     [Alias("shutdown")]
     [Summary("Causes the entire process to end itself!")]
-    [RequireOwner]
+    [RequireSudo]
     public async Task ExitProgram()
     {
         await Context.Channel.EchoAndReply("Shutting down... goodbye! **Bot services are going offline.**").ConfigureAwait(false);
         Environment.Exit(0);
+        await Context.Message.DeleteAsync();
     }
 
     [Command("dm")]
