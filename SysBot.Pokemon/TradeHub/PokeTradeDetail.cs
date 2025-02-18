@@ -1,15 +1,16 @@
 using PKHeX.Core;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 
 namespace SysBot.Pokemon
 {
     public class PokeTradeDetail<TPoke> : IEquatable<PokeTradeDetail<TPoke>>, IFavoredEntry where TPoke : PKM, new()
     {
-        // ReSharper disable once StaticMemberInGenericType
-        /// <summary> Global variable indicating the amount of trades created. </summary>
-        private static int CreatedCount;
+        // Persistent Trade Count Storage
+        private static readonly string TradeCountFile = "trade_count.txt";
+        private static int CreatedCount = LoadTradeCount();
 
         /// <summary> Indicates if this trade data should be given priority for queue insertion. </summary>
         public bool IsFavored { get; }
@@ -17,9 +18,7 @@ namespace SysBot.Pokemon
         /// <summary> Customized trade parameters. </summary>
         public Dictionary<string, object> Context = [];
 
-        /// <summary>
-        /// Trade Code
-        /// </summary>
+        /// <summary> Trade Code </summary>
         public readonly int Code;
 
         /// <summary> Data to be traded </summary>
@@ -67,12 +66,9 @@ namespace SysBot.Pokemon
 
         public bool SetEdited { get; set; }
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
         public PokeTradeDetail(TPoke pkm, PokeTradeTrainerInfo info, IPokeTradeNotifier<TPoke> notifier, PokeTradeType type, int code, bool favored = false, List<Pictocodes>? lgcode = null, int batchTradeNumber = 0, int totalBatchTrades = 0, bool isMysteryMon = false, bool isMysteryEgg = false, int uniqueTradeID = 0, bool ignoreAutoOT = false, bool setEdited = false)
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
-            ID = Interlocked.Increment(ref CreatedCount) % 50000;
+            ID = GetNextTradeID(); // Persistent ID that continues indefinitely
             Code = code;
             TradeData = pkm;
             Trainer = info;
@@ -80,9 +76,7 @@ namespace SysBot.Pokemon
             Type = type;
             Time = DateTime.Now;
             IsFavored = favored;
-#pragma warning disable CS8601 // Possible null reference assignment.
-            LGPETradeCode = lgcode;
-#pragma warning restore CS8601 // Possible null reference assignment.
+            LGPETradeCode = lgcode ?? new List<Pictocodes>();
             BatchTradeNumber = batchTradeNumber;
             TotalBatchTrades = totalBatchTrades;
             IsMysteryEgg = isMysteryEgg;
@@ -90,6 +84,27 @@ namespace SysBot.Pokemon
             UniqueTradeID = uniqueTradeID;
             IgnoreAutoOT = ignoreAutoOT;
             SetEdited = setEdited;
+        }
+
+        private static int LoadTradeCount()
+        {
+            if (!File.Exists(TradeCountFile))
+            {
+                File.WriteAllText(TradeCountFile, "0"); // Create the file with an initial count
+                return 0;
+            }
+
+            if (int.TryParse(File.ReadAllText(TradeCountFile), out int count))
+                return count;
+
+            return 0;
+        }
+
+        private static int GetNextTradeID()
+        {
+            int newCount = Interlocked.Increment(ref CreatedCount);
+            File.WriteAllText(TradeCountFile, newCount.ToString()); // Save the new count to persist across restarts
+            return newCount;
         }
 
         public void TradeInitialize(PokeRoutineExecutor<TPoke> routine) => Notifier.TradeInitialize(routine, this);
@@ -141,23 +156,14 @@ namespace SysBot.Pokemon
     public enum Pictocodes
     {
         Pikachu,
-
         Eevee,
-
         Bulbasaur,
-
         Charmander,
-
         Squirtle,
-
         Pidgey,
-
         Caterpie,
-
         Rattata,
-
         Jigglypuff,
-
         Diglett
     }
 }
