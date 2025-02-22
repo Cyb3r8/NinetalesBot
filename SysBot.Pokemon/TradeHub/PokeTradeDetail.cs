@@ -61,32 +61,29 @@ namespace SysBot.Pokemon
 
         private static int LoadTradeCount()
         {
-            if (!File.Exists(TradeCountFile))
-            {
-                try
-                {
-                    File.WriteAllText(TradeCountFile, "0");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error creating trade count file: {ex.Message}");
-                }
-                return 0;
-            }
-
             try
             {
+                if (!File.Exists(TradeCountFile))
+                {
+                    Console.WriteLine("Trade count file not found. Creating a new one...");
+                    File.WriteAllText(TradeCountFile, "0"); // Create the file with initial count
+                    return 0;
+                }
+
                 string content = File.ReadAllText(TradeCountFile);
                 if (int.TryParse(content, out int count))
                     return count;
+
+                Console.WriteLine("Invalid trade count file format. Resetting to 0.");
+                File.WriteAllText(TradeCountFile, "0"); // Reset if invalid content
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error reading trade count file: {ex.Message}");
+                Console.WriteLine($"Error handling trade count file: {ex.Message}");
             }
-
             return 0;
         }
+
 
         private static int GetNextTradeID()
         {
