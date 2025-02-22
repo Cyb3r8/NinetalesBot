@@ -8,7 +8,8 @@ namespace SysBot.Pokemon
 {
     public class PokeTradeDetail<TPoke> : IEquatable<PokeTradeDetail<TPoke>>, IFavoredEntry where TPoke : PKM, new()
     {
-        private static readonly string TradeCountFile = "trade_count.txt";
+        private static readonly string TradeCountFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "trade_count.txt");
+
         private static int CreatedCount;
 
         static PokeTradeDetail()
