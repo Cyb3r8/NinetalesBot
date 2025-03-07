@@ -156,7 +156,17 @@ public static class QueueHelper<T> where T : PKM, new()
                 }
                 else
                 {
+                    var hub = SysCord<T>.Runner.Hub;
+                    var info = hub.Queues.Info;
+
+                    // Generate the uniqueTradeID before adding to the queue
+                    int uniqueTradeID = isBatchTrade ? GetOrCreateBatchId(trader.Id, batchTradeNumber) : GenerateUniqueTradeID();
+
+                    var position = info.CheckPosition(trader.Id, uniqueTradeID, routine); // Now pass the uniqueTradeID
+                    int estimatedMinutes = position.Position * 2; // Adjust this value if needed
+
                     await EmbedHelper.SendTradeCodeEmbedAsync(trader, code).ConfigureAwait(false);
+                    await EmbedHelper.SendTradeQueuedEmbedAsync(trader, type.ToString(), position.Position, estimatedMinutes).ConfigureAwait(false);
                 }
             }
 

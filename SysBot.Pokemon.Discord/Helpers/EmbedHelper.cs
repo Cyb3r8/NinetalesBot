@@ -60,6 +60,18 @@ public static class EmbedHelper
         await user.SendMessageAsync(embed: embed).ConfigureAwait(false);
     }
 
+    public static async Task SendTradeQueuedEmbedAsync(IUser user, string tradeType, int position, int estimatedMinutes)
+    {
+        var embed = new EmbedBuilder()
+            .WithTitle("Your Trade has been Added to the Queue!")
+            .WithDescription($"**Trade Type**: {tradeType}\n**Queue Position**: {position}\n**Estimated Wait Time**: {estimatedMinutes} minutes")
+            .WithTimestamp(DateTimeOffset.Now)
+            .WithColor(Color.Purple)
+            .Build();
+
+        await user.SendMessageAsync(embed: embed).ConfigureAwait(false);
+    }
+
     public static async Task SendTradeFinishedEmbedAsync<T>(IUser user, string message, T pk, bool isMysteryMon, bool isMysteryEgg)
         where T : PKM, new()
     {
