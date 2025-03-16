@@ -1,4 +1,5 @@
 using Discord;
+using Discord.Net;
 using Discord.WebSocket;
 using PKHeX.Core;
 using PKHeX.Core.AutoMod;
@@ -6,7 +7,10 @@ using PKHeX.Drawing.PokeSprite;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using Color = Discord.Color;
 
 namespace SysBot.Pokemon.Discord;
@@ -108,39 +112,71 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>
         EmbedHelper.SendTradeCanceledEmbedAsync(Trader, msg.ToString()).ConfigureAwait(false);
     }
 
-    public void TradeFinished(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result)
+    public async void TradeFinished(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result)
     {
         OnFinish?.Invoke(routine);
         var tradedToUser = Data.Species;
 
         // Create different messages based on whether this is a single trade or part of a batch
-        string message;
-        if (TotalBatchTrades > 1)
-        {
-            // This is part of a batch, but we still want to confirm each individual trade
-            message = tradedToUser != 0
-                ? $"Trade {BatchTradeNumber}/{TotalBatchTrades} completed! Pokémon sent."
-                : $"Trade {BatchTradeNumber}/{TotalBatchTrades} completed!";
-        }
-        else
-        {
-            // Standard single trade message
-            message = tradedToUser != 0 ? $"Trade finished. Enjoy!" : "Trade finished!";
-        }
+        string message = TotalBatchTrades > 1
+            ? $"Trade {BatchTradeNumber}/{TotalBatchTrades} completed! {(tradedToUser != 0 ? "Pokémon sent." : "")}"
+            : (tradedToUser != 0 ? "Trade finished. Enjoy!" : "Trade finished!");
 
         Trader.SendMessageAsync(message).ConfigureAwait(false);
 
         // Always send back the received Pokémon if ReturnPKMs is enabled
         if (result is not null && Hub.Config.Discord.ReturnPKMs)
         {
+            string formattedFileName = FormatFileName(result.FileName); // Format the filename
+
             // Add more context for batch trades
             string fileMessage = TotalBatchTrades > 1
-                ? $"Here's the Pokémon you traded me (Trade {BatchTradeNumber}/{TotalBatchTrades})!"
-                : "Here's what you traded me!";
+                ? $"Here's the Pokémon you traded me (Trade {BatchTradeNumber}/{TotalBatchTrades}): {formattedFileName}"
+                : $"Here's what you traded me: {formattedFileName}";
 
-            Trader.SendPKMAsync(result, fileMessage).ConfigureAwait(false);
+            // Introduce a delay to prevent rate-limiting
+            await Task.Delay(2000);  // 2-second delay, adjust as needed
+
+            int maxRetries = 3;
+            int attempt = 0;
+            bool success = false;
+
+            while (attempt < maxRetries && !success)
+            {
+                try
+                {
+                    await Trader.SendPKMAsync(result, fileMessage).ConfigureAwait(false);
+                    success = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Attempt {attempt + 1} failed: {ex.Message}");
+                    attempt++;
+
+                    if (attempt < maxRetries)
+                        await Task.Delay(3000);  // 3-second delay before retrying
+                    else
+                        Console.WriteLine("All attempts to send Pokémon failed.");
+                }
+            }
         }
     }
+
+    // Helper method to format the filename
+    private string FormatFileName(string fileName)
+    {
+        if (string.IsNullOrEmpty(fileName))
+            return "Unknown File";
+
+        // Remove the first part before the first underscore
+        string trimmed = fileName.Substring(fileName.IndexOf('_') + 1);
+
+        // Remove all dashes
+        trimmed = trimmed.Replace("-", "").Replace("_", " ");
+
+        return trimmed;
+    }
+
 
     public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, string message)
     {

@@ -64,13 +64,16 @@ public static class EmbedHelper
     {
         var embed = new EmbedBuilder()
             .WithTitle("Your Trade has been Added to the Queue!")
-            .WithDescription($"**Trade Type**: {tradeType}\n**Queue Position**: {position}\n**Estimated Wait Time**: {estimatedMinutes} minutes")
+            .WithDescription($"**Trade Type**: {tradeType}\n" +
+                             $"**Queue Position**: {(position == -1 ? 1 : position)}\n" +
+                             $"**Estimated Wait Time**: {estimatedMinutes} minute(s)")
             .WithTimestamp(DateTimeOffset.Now)
             .WithColor(Color.Purple)
             .Build();
 
         await user.SendMessageAsync(embed: embed).ConfigureAwait(false);
     }
+
 
     public static async Task SendTradeFinishedEmbedAsync<T>(IUser user, string message, T pk, bool isMysteryMon, bool isMysteryEgg)
         where T : PKM, new()

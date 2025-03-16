@@ -803,6 +803,9 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         var trades = TradeModule<T>.ParseBatchTradeContent(content);
         var maxTradesAllowed = SysCord<T>.Runner.Config.Trade.TradeConfiguration.MaxPkmsPerTrade;
 
+        // Log total trades detected
+        Console.WriteLine($"Total trades in batch: {trades.Count}");
+
         // Check if batch mode is allowed and if the number of trades exceeds the limit
         if (maxTradesAllowed < 1 || trades.Count > maxTradesAllowed)
         {
@@ -819,16 +822,25 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
             var trade = trades[i];
             int batchTradeNumber = i + 1;
 
-            // Execute
-            await ProcessSingleTradeAsync(trade, batchTradeCode, true, batchTradeNumber, trades.Count);
-
-            // Log to confirm trade order and pause
-            Console.WriteLine($"Completed batch trade #{batchTradeNumber}: {trade}");
-
-            // Add a delay of 3/4 of a second before processing the next batch trade number
-            if (i < trades.Count - 1)
+            try
             {
-                await Task.Delay(750); // 750 milliseconds = 0.75 seconds (Delay to process order)
+                Console.WriteLine($"Processing trade #{batchTradeNumber}: {trade}");
+
+                // Execute trade
+                await ProcessSingleTradeAsync(trade, batchTradeCode, true, batchTradeNumber, trades.Count);
+
+                // Log confirmation
+                Console.WriteLine($"Completed batch trade #{batchTradeNumber}.");
+
+                // Add a delay to avoid rate-limiting
+                if (i < trades.Count - 1)
+                {
+                    await Task.Delay(750); // 750 milliseconds = 0.75 seconds
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error processing trade #{batchTradeNumber}: {ex.Message}");
             }
         }
 
@@ -838,6 +850,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
             _ = DeleteMessagesAfterDelayAsync(userMessage, null, 2);
         }
     }
+
 
     private static List<string> ParseBatchTradeContent(string content)
     {
@@ -886,7 +899,10 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         using var archive = new ZipArchive(zipStream, ZipArchiveMode.Read);
         var entries = archive.Entries.ToList();
 
-        const int maxTradesAllowed = 6; // for full team in the zip created
+        const int maxTradesAllowed = 6; // Max Pokémon in the zip file
+
+        // Log total trades detected
+        Console.WriteLine($"Total trades in batch: {entries.Count}");
 
         // Check if batch mode is allowed and if the number of trades exceeds the limit
         if (maxTradesAllowed < 1 || entries.Count > maxTradesAllowed)
@@ -900,21 +916,43 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
         foreach (var entry in entries)
         {
-            await using var entryStream = entry.Open();
-            var pkBytes = await TradeModule<T>.ReadAllBytesAsync(entryStream).ConfigureAwait(false);
-            var pk = EntityFormat.GetFromBytes(pkBytes);
-
-            if (pk is T)
+            try
             {
-                await ProcessSingleTradeAsync((T)pk, batchTradeCode, true, batchTradeNumber, entries.Count);
-                batchTradeNumber++;
+                await using var entryStream = entry.Open();
+                var pkBytes = await TradeModule<T>.ReadAllBytesAsync(entryStream).ConfigureAwait(false);
+                var pk = EntityFormat.GetFromBytes(pkBytes);
+
+                if (pk is T)
+                {
+                    Console.WriteLine($"Processing trade #{batchTradeNumber}: {entry.Name}");
+                    await ProcessSingleTradeAsync((T)pk, batchTradeCode, true, batchTradeNumber, entries.Count);
+                    Console.WriteLine($"Completed batch trade #{batchTradeNumber}.");
+                    batchTradeNumber++;
+
+                    if (batchTradeNumber <= entries.Count)
+                    {
+                        await Task.Delay(750); // Delay between trades to avoid rate-limiting
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error processing trade #{batchTradeNumber}: {ex.Message}");
             }
         }
+
+        // Log and ensure exit after processing all trades
+        Console.WriteLine("All trades completed. Exiting batch trade session.");
+        return; // Ensure function stops execution
+
+        // Final cleanup
         if (Context.Message is IUserMessage userMessage)
         {
             _ = DeleteMessagesAfterDelayAsync(userMessage, null, 2);
         }
     }
+
+
 
     private static async Task<byte[]> ReadAllBytesAsync(Stream stream)
     {
