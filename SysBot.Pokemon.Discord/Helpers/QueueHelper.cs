@@ -137,7 +137,10 @@ public static class QueueHelper<T> where T : PKM, new()
         return ActiveBatchIds.TryGetValue(userId, out var existingId) ? existingId : GenerateUniqueTradeID();
     }
 
-    public static async Task AddToQueueAsync(SocketCommandContext context, int code, string trainer, RequestSignificance sig, T trade, PokeRoutineType routine, PokeTradeType type, SocketUser trader, bool isBatchTrade = false, int batchTradeNumber = 1, int totalBatchTrades = 1, bool isHiddenTrade = false, bool isMysteryMon = false, bool isMysteryEgg = false, List<Pictocodes>? lgcode = null, bool ignoreAutoOT = false, bool setEdited = false, bool isNonNative = false)
+    public static async Task AddToQueueAsync(SocketCommandContext context, int code, string trainer, RequestSignificance sig,
+    T trade, PokeRoutineType routine, PokeTradeType type, SocketUser trader, bool isBatchTrade = false,
+    int batchTradeNumber = 1, int totalBatchTrades = 1, bool isHiddenTrade = false, bool isMysteryMon = false,
+    bool isMysteryEgg = false, List<Pictocodes>? lgcode = null, bool ignoreAutoOT = false, bool setEdited = false, bool isNonNative = false)
     {
         if ((uint)code > MaxTradeCode)
         {
@@ -162,21 +165,42 @@ public static class QueueHelper<T> where T : PKM, new()
                     // Generate the uniqueTradeID before adding to the queue
                     int uniqueTradeID = isBatchTrade ? GetOrCreateBatchId(trader.Id, batchTradeNumber) : GenerateUniqueTradeID();
 
-                    var position = info.CheckPosition(trader.Id, uniqueTradeID, routine); // Now pass the uniqueTradeID
-                    int estimatedMinutes = position.Position * 2; // Adjust this value if needed
+                    var position = info.CheckPosition(trader.Id, uniqueTradeID, routine);
+                    int estimatedMinutes = position.Position * 2; // Adjust this value if needed;
+
+                    // Send DM Embed
+                    var dmEmbed = new EmbedBuilder()
+                        .WithTitle("Your trade has been added to the queue!")
+                        .WithDescription($"**Trade Type**: {type}\n" +
+                                         $"**Queue Position**: {(position.Position == -1 ? 1 : position.Position)}\n" +
+                                         $"**Estimated Wait Time**: {estimatedMinutes:F1} min(s)")
+                        .WithColor(DiscordColor.Purple)
+                        .WithTimestamp(DateTimeOffset.Now)
+                        .Build();
+
+                    try
+                    {
+                        await trader.SendMessageAsync(embed: dmEmbed).ConfigureAwait(false);
+                    }
+                    catch (HttpException)
+                    {
+                        await context.Channel.SendMessageAsync($"{trader.Mention}, I couldn't send you a DM. Please enable direct messages.").ConfigureAwait(false);
+                    }
 
                     await EmbedHelper.SendTradeCodeEmbedAsync(trader, code).ConfigureAwait(false);
-                    await EmbedHelper.SendTradeQueuedEmbedAsync(trader, type.ToString(), position.Position, estimatedMinutes).ConfigureAwait(false);
                 }
             }
 
-            var result = await AddToTradeQueue(context, trade, code, trainer, sig, routine, isBatchTrade ? PokeTradeType.Batch : type, trader, isBatchTrade, batchTradeNumber, totalBatchTrades, isHiddenTrade, isMysteryMon, isMysteryEgg, lgcode, ignoreAutoOT, setEdited, isNonNative).ConfigureAwait(false);
+            var result = await AddToTradeQueue(context, trade, code, trainer, sig, routine,
+                isBatchTrade ? PokeTradeType.Batch : type, trader, isBatchTrade, batchTradeNumber, totalBatchTrades,
+                isHiddenTrade, isMysteryMon, isMysteryEgg, lgcode, ignoreAutoOT, setEdited, isNonNative).ConfigureAwait(false);
         }
         catch (HttpException ex)
         {
             await HandleDiscordExceptionAsync(context, trader, ex).ConfigureAwait(false);
         }
     }
+
 
     public static Task AddToQueueAsync(SocketCommandContext context, int code, string trainer, RequestSignificance sig, T trade, PokeRoutineType routine, PokeTradeType type, bool ignoreAutoOT = false)
     {

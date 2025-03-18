@@ -4,6 +4,7 @@ using SysBot.Pokemon.Helpers;
 using System;
 using System.Threading.Tasks;
 
+
 namespace SysBot.Pokemon.Discord;
 
 public static class EmbedHelper
@@ -73,6 +74,7 @@ public static class EmbedHelper
 
         await user.SendMessageAsync(embed: embed).ConfigureAwait(false);
     }
+
 
 
     public static async Task SendTradeFinishedEmbedAsync<T>(IUser user, string message, T pk, bool isMysteryMon, bool isMysteryEgg)

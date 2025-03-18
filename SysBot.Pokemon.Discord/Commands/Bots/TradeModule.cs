@@ -913,11 +913,18 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
         var batchTradeCode = Info.GetRandomTradeCode(userID);
         int batchTradeNumber = 1;
+        HashSet<string> completedTrades = new HashSet<string>(); // Track completed trades
 
         foreach (var entry in entries)
         {
             try
             {
+                if (completedTrades.Contains(entry.Name))
+                {
+                    Console.WriteLine($"Skipping already completed trade: {entry.Name}");
+                    continue;
+                }
+
                 await using var entryStream = entry.Open();
                 var pkBytes = await TradeModule<T>.ReadAllBytesAsync(entryStream).ConfigureAwait(false);
                 var pk = EntityFormat.GetFromBytes(pkBytes);
@@ -927,6 +934,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
                     Console.WriteLine($"Processing trade #{batchTradeNumber}: {entry.Name}");
                     await ProcessSingleTradeAsync((T)pk, batchTradeCode, true, batchTradeNumber, entries.Count);
                     Console.WriteLine($"Completed batch trade #{batchTradeNumber}.");
+                    completedTrades.Add(entry.Name);
                     batchTradeNumber++;
 
                     if (batchTradeNumber <= entries.Count)
@@ -951,6 +959,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
             _ = DeleteMessagesAfterDelayAsync(userMessage, null, 2);
         }
     }
+
 
 
 
