@@ -15,7 +15,7 @@ public static class EmbedHelper
             .WithTitle("Notice")
             .WithDescription(message)
             .WithTimestamp(DateTimeOffset.Now)
-            .WithThumbnailUrl("https://raw.githubusercontent.com/bdawg1989/sprites/main/exclamation.gif")
+            .WithThumbnailUrl("https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/exclamation.gif")
             .WithColor(Color.Red)
             .Build();
 
@@ -28,7 +28,7 @@ public static class EmbedHelper
             .WithTitle("Here is your Trainer Info")
             .WithDescription(message)
             .WithTimestamp(DateTimeOffset.Now)
-            .WithThumbnailUrl("https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/Trainer_Info.png")
+            .WithThumbnailUrl("https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/Trainer_Info.png")
             .WithColor(Color.Red)
             .Build();
 

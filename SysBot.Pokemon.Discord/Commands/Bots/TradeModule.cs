@@ -443,12 +443,12 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
                             var changesEmbed = new EmbedBuilder()
                                 .WithTitle("Showdown Set Corrections")
                                 .WithColor(Color.Orange)
-                                .WithThumbnailUrl("https://raw.githubusercontent.com/bdawg1989/sprites/main/profoak.png")
+                                .WithThumbnailUrl("https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/eevee.png")
                                 .WithDescription(string.Join("\n", correctionMessages))
                                 .AddField("Corrected Showdown Set:", $"```{finalShowdownSet}```")
                                 .Build();
                             var correctionMessage = await ReplyAsync($"{userName}, here are the corrections we made to your Showdown set:", embed: changesEmbed).ConfigureAwait(false);
-                            _ = DeleteMessagesAfterDelayAsync(correctionMessage, Context.Message, 30);
+                            _ = DeleteMessagesAfterDelayAsync(correctionMessage, Context.Message, 60);
                         }
                     }
 
@@ -481,7 +481,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
                         string userMention = Context.User.Mention;
                         string messageContent = $"{userMention}, here's the report for your request:";
                         var message = await Context.Channel.SendMessageAsync(text: messageContent, embed: embedBuilder.Build()).ConfigureAwait(false);
-                        _ = DeleteMessagesAfterDelayAsync(message, Context.Message, 30);
+                        _ = DeleteMessagesAfterDelayAsync(message, Context.Message, 60);
                         return;
                     }
                     pk = correctedPk;
@@ -573,7 +573,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         var userID = Context.User.Id;
         if (Info.IsUserInQueue(userID))
         {
-            _ = ReplyAndDeleteAsync("You already have an existing trade in the queue. Please wait until it is processed.", 2, null);
+            _ = ReplyAndDeleteAsync("You already have an existing trade in the queue. Please wait until it is processed.", 10, null);
             return;
         }
 
@@ -665,7 +665,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
                             var changesEmbed = new EmbedBuilder()
                                 .WithTitle("Showdown Set Corrections")
                                 .WithColor(Color.Orange)
-                                .WithThumbnailUrl("https://raw.githubusercontent.com/bdawg1989/sprites/main/profoak.png")
+                                .WithThumbnailUrl("https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/eevee.png")
                                 .WithDescription(string.Join("\n", correctionMessages))
                                 .AddField("Corrected Showdown Set:", $"```{finalShowdownSet}```")
                                 .Build();
@@ -719,7 +719,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
                 {
                     if (TradeExtensions<T>.HasAdName(pk, out string ad))
                     {
-                        await ReplyAndDeleteAsync("Detected Adname in the Pokémon's name or trainer name, which is not allowed.", 5);
+                        await ReplyAndDeleteAsync("Detected Adname in the Pokémon's name or trainer name, which is not allowed.", 10);
                         return;
                     }
                 }
@@ -732,11 +732,11 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
                 LogUtil.LogSafe(ex, nameof(TradeModule<T>));
                 var msg = $"Oops! An unexpected problem happened with this Showdown Set:\n```{string.Join("\n", set.GetSetLines())}```";
 
-                _ = ReplyAndDeleteAsync(msg, 2, null);
+                _ = ReplyAndDeleteAsync(msg, 10, null);
             }
             if (Context.Message is IUserMessage userMessage)
             {
-                _ = DeleteMessagesAfterDelayAsync(userMessage, null, 2);
+                _ = DeleteMessagesAfterDelayAsync(userMessage, null, 10);
             }
         });
 
@@ -771,7 +771,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         }).ConfigureAwait(false);
         if (Context.Message is IUserMessage userMessage)
         {
-            _ = DeleteMessagesAfterDelayAsync(userMessage, null, 2);
+            _ = DeleteMessagesAfterDelayAsync(userMessage, null, 10);
         }
     }
 
@@ -784,7 +784,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         // First, check if batch trades are allowed
         if (!SysCord<T>.Runner.Config.Trade.TradeConfiguration.AllowBatchTrades)
         {
-            _ = ReplyAndDeleteAsync("Batch trades are currently disabled.", 2);
+            _ = ReplyAndDeleteAsync("Batch trades are currently disabled.", 10);
             return;
         }
 
@@ -792,7 +792,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         var userID = Context.User.Id;
         if (Info.IsUserInQueue(userID))
         {
-            _ = ReplyAndDeleteAsync("You already have an existing trade in the queue. Please wait until it is processed.", 2);
+            _ = ReplyAndDeleteAsync("You already have an existing trade in the queue. Please wait until it is processed.", 10);
             return;
         }
 
@@ -807,7 +807,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         if (maxTradesAllowed < 1 || trades.Count > maxTradesAllowed)
         {
             _ = ReplyAndDeleteAsync($"You can only process up to {maxTradesAllowed} trades at a time. Please reduce the number of trades in your batch.", 5, Context.Message);
-            _ = DeleteMessagesAfterDelayAsync(null, Context.Message, 2);
+            _ = DeleteMessagesAfterDelayAsync(null, Context.Message, 10);
             return;
         }
 
@@ -844,7 +844,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         // Final cleanup
         if (Context.Message is IUserMessage userMessage)
         {
-            _ = DeleteMessagesAfterDelayAsync(userMessage, null, 2);
+            _ = DeleteMessagesAfterDelayAsync(userMessage, null, 10);
         }
     }
 
@@ -1052,7 +1052,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
                             var changesEmbed = new EmbedBuilder()
                                 .WithTitle("Showdown Set Corrections")
                                 .WithColor(Color.Orange)
-                                .WithThumbnailUrl("https://raw.githubusercontent.com/bdawg1989/sprites/main/profoak.png")
+                                .WithThumbnailUrl("https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/eevee.png")
                                 .WithDescription(string.Join("\n", correctionMessages))
                                 .AddField("Corrected Showdown Set:", $"```{finalShowdownSet}```")
                                 .Build();
@@ -1778,15 +1778,16 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
         // Create the embed with a custom thumbnail
         var embed = new EmbedBuilder()
-            .WithTitle($"{Context.User.Username}'s Trade Profile")
+            .WithTitle($"{Context.User.Username}'s Trade-Profile")
             .WithColor(Color.Blue)
             .WithThumbnailUrl(CustomThumbnailUrl)
-            .AddField("Trade Code", formattedTradeCode, true)
-            .AddField("OT", ot, true)
-            .AddField("TID", tid, true)
-            .AddField("SID", sid, true)
-            .AddField("Trade Count", tradeCount, true)
-            .WithFooter("Use the bot responsibly!")
+            .WithDescription($"**Trade-Code:** {formattedTradeCode}\n**Trainer (OT):** {ot}\n**TID:** {tid}\n**SID:** {sid}")
+            //           .AddField("Trade Code", formattedTradeCode, true)
+            //           .AddField("OT", ot, true)
+            //           .AddField("TID", tid, true)
+            //           .AddField("SID", sid, true)
+            //           .AddField("Trade Count", tradeCount, true)
+            .WithFooter($"Trade-Count: {tradeCount}")
             .Build();
 
         // Try sending the embed to the user's DMs
@@ -1879,47 +1880,21 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
     {
         string status = milestone switch
         {
-            1 => "Obi-Wan",
-            25 => "Luke",
-            50 => "BB-8",
-            75 => "C3PO",
-            100 => "Finn",
-            125 => "R2-D2",
-            150 => "Trooper",
-            175 => "Darth-Vader",
-            200 => "Obi-Wan-2",
-            225 => "Han",
-            250 => "Leia",
-            275 => "Rey",
-            300 => "Ahsoka",
-            325 => "C3po & R2-D2",
-            350 => "Trooper-2",
-            375 => "Yoda",
-            400 => "Darth-Maul",
-            425 => "???",
-            450 => "Greedo",
-            475 => "Han & Chewie",
-            500 => "Boba Fett",
-            525 => "Wicket",
-            550 => "Trandoshan",
-            575 => "Kylo Ren",
-            600 => "Mando",
-            625 => "Chewie",
-            650 => "Tie Fighter Pilot",
-            675 => "Trooper-3",
-            700 => "Grand Admiral Thrawn",
-            725 => "Poe Dameron",
-            750 => "BB-8-2",
-            775 => "Clone",
-            800 => "Cad Bane",
-            825 => "Anakin",
-            850 => "Endor Trooper",
-            875 => "Mandalorian",
-            900 => "Chewbacca",
-            925 => "Kylo Ren-2",
-            950 => "Darth-Maul-2",
-            975 => "Darth-Vader-2",
-            999 => "Master Yoda",
+            1 => "Newbie Trainer",
+            50 => "Novice Trainer",
+            100 => "Pokémon Professor",
+            150 => "Pokémon Specialist",
+            200 => "Pokémon Champion",
+            250 => "Pokémon Hero",
+            300 => "Pokémon Elite",
+            350 => "Pokémon Trader",
+            400 => "Pokémon Sage",
+            450 => "Pokémon Legend",
+            500 => "Region Master",
+            550 => "Trade Master",
+            600 => "World Famous",
+            650 => "Pokémon Master",
+            700 => "Pokémon God",
             _ => "New Trainer"
         };
 

@@ -172,7 +172,7 @@ namespace SysBot.Pokemon.Discord
                 Color = embedColor,
                 Description = embedDescription
             }
-            .WithTitle("Important Announcement from The Pokemon Empire!")
+            .WithTitle("Important Announcement from Ninetales Paradise!")
             .WithThumbnailUrl(thumbnailUrl)
             .Build();
 
@@ -212,12 +212,12 @@ namespace SysBot.Pokemon.Discord
         {
             var thumbnailOptions = new List<string>
     {
-        "https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/Announcement_1.png",
-        "https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/Announcement_2.png",
-        "https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/Announcement_3.png",
-        "https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/Announcement_4.png",
-        "https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/Announcement_5.png",
-        "https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/Announcement_6.png",
+        "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/eevee.png",
+        "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/eevee.png",
+        "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/eevee.png",
+        "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/eevee.png",
+        "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/eevee.png",
+        "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/eevee.png",
     };
             var random = new Random();
             return thumbnailOptions[random.Next(thumbnailOptions.Count)];
@@ -241,13 +241,13 @@ namespace SysBot.Pokemon.Discord
         {
             return option switch
             {
-                ThumbnailOption.Gengar => "https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/Announcement_1.png",
-                ThumbnailOption.Pikachu => "https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/Announcement_2.png",
-                ThumbnailOption.Umbreon => "https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/Announcement_3.png",
-                ThumbnailOption.Sylveon => "https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/Announcement_4.png",
-                ThumbnailOption.Charmander => "https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/Announcement_5.png",
-                ThumbnailOption.Jigglypuff => "https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/Announcement_6.png",
-                _ => "https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/Empire_Logo.png",
+                ThumbnailOption.Gengar => "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/eevee.png",
+                ThumbnailOption.Pikachu => "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/eevee.png",
+                ThumbnailOption.Umbreon => "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/eevee.png",
+                ThumbnailOption.Sylveon => "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/eevee.png",
+                ThumbnailOption.Charmander => "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/eevee.png",
+                ThumbnailOption.Jigglypuff => "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/eevee.png",
+                _ => "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/eevee.png",
             };
         }
 

@@ -1,4 +1,4 @@
-using AnimatedGif;
+ using AnimatedGif;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -139,7 +139,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
     [Command("addChannel")]
     [Summary("Adds a channel to the list of channels that are accepting commands.")]
-    [RequireOwner]
+    [RequireSudo]
     public async Task AddChannel()
     {
         var obj = GetReference(Context.Message.Channel);
@@ -180,7 +180,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
     [Command("removeChannel")]
     [Summary("Removes a channel from the list of channels that are accepting commands.")]
-    [RequireOwner]
+    [RequireSudo]
     public async Task RemoveChannel()
     {
         var obj = GetReference(Context.Message.Channel);
@@ -423,11 +423,11 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
         var embed = new EmbedBuilder
         {
-            Title = "Private Message from The Pokemon Empire",
+            Title = "Private Message from Ninetales' Paradise",
             Description = message,
             Color = (DiscordColor?)Color.Red,
             Timestamp = DateTimeOffset.Now,
-            ThumbnailUrl = "https://raw.githubusercontent.com/Joseph11024/Bot-Images/main/Empire/DM.png"
+            ThumbnailUrl = "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/pikamail.png"
         };
 
         try

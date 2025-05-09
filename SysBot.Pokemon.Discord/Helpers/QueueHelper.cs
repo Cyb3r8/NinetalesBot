@@ -288,7 +288,7 @@ public static class QueueHelper<T> where T : PKM, new()
                 .WithAuthor(new EmbedAuthorBuilder()
                     .WithName(embedData.AuthorName)
                     .WithIconUrl(trader.GetAvatarUrl() ?? trader.GetDefaultAvatarUrl())
-                    .WithUrl("http://pkmempire.com/"));
+                    .WithUrl("http://ninetales-paradise.com/"));
 
             DetailsExtractor<T>.AddAdditionalText(embedBuilder);
 
@@ -303,7 +303,7 @@ public static class QueueHelper<T> where T : PKM, new()
 
             if (setEdited && Info.Hub.Config.Trade.AutoCorrectConfig.AutoCorrectEmbedIndicator)
             {
-                embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/bdawg1989/sprites/main/setedited.png";
+                embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/setedited.png";
                 embedBuilder.AddField("**__Notice__**: **Your Showdown Set was Invalid.**", "*Auto Corrected to make legal.*");
             }
             // Check if the Pokemon is Non-Native and/or has a Home Tracker
@@ -312,33 +312,33 @@ public static class QueueHelper<T> where T : PKM, new()
                 if (homeTrack.HasTracker && isNonNative)
                 {
                     // Both Non-Native and has Home Tracker
-                    embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/bdawg1989/sprites/main/exclamation.gif";
+                    embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/exclamation.gif";
                     embedBuilder.AddField("**__Notice__**: **This Pokemon is Non-Native & Has HOME Tracker.**", "*This Pokemon can enter HOME.*");
                 }
                 else if (homeTrack.HasTracker)
                 {
                     // Only has Home Tracker
-                    embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/bdawg1989/sprites/main/exclamation.gif";
+                    embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/exclamation.gif";
                     embedBuilder.AddField("**__Notice__**: **HOME Tracker Detected.**", "*This Pokemon can enter HOME.*");
                 }
                 else if (isNonNative)
                 {
                     // Only Non-Native
-                    embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/bdawg1989/sprites/main/exclamation.gif";
+                    embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/exclamation.gif";
                     embedBuilder.AddField("**__Notice__**: **This Pokemon is Non-Native and no HOME Tracker Detected**", "*This Pokemon cannot enter HOME.*");
                 }
             }
             else if (isNonNative)
             {
                 // Fallback for Non-Native Pokemon that don't implement IHomeTrack
-                embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/bdawg1989/sprites/main/exclamation.gif";
+                embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/exclamation.gif";
                 embedBuilder.AddField("**__Notice__**: **This Pokemon is Non-Native and no HOME Tracker Detected.**", "*This Pokemon cannot enter HOME*");
             }
 
             // If the Pokémon has a HOME tracker, show the HOME Tracker detected message
             if (pk is IHomeTrack { HasTracker: true })
             {
-                embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/exclamation.gif";
+                embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/Cyb3r8/Bot-Images/refs/heads/main/Ninetales%20Paradise/exclamation.gif";
                 embedBuilder.AddField("**__Notice__:** HOME Tracker Detected.", "*This Pokemon can enter HOME*");
             }
 
